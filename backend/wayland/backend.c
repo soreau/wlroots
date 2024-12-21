@@ -666,7 +666,7 @@ struct wlr_backend *wlr_wl_backend_create(struct wl_event_loop *loop,
 	}
 	wl_event_source_check(wl->remote_display_src);
 
-	if (wl->drm_render_name != NULL) {
+	if (!getenv("WLR_RENDERER_FORCE_SOFTWARE") && wl->drm_render_name != NULL) {
 		wlr_log(WLR_DEBUG, "Opening DRM render node %s", wl->drm_render_name);
 		wl->drm_fd = open(wl->drm_render_name, O_RDWR | O_NONBLOCK | O_CLOEXEC);
 		if (wl->drm_fd < 0) {

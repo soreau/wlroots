@@ -165,12 +165,12 @@ static bool test_buffer(struct wlr_wl_backend *wl,
 		struct wlr_buffer *wlr_buffer) {
 	struct wlr_dmabuf_attributes dmabuf;
 	struct wlr_shm_attributes shm;
-	if (wlr_buffer_get_dmabuf(wlr_buffer, &dmabuf)) {
-		return wlr_drm_format_set_has(&wl->linux_dmabuf_v1_formats,
-			dmabuf.format, dmabuf.modifier);
-	} else if (wlr_buffer_get_shm(wlr_buffer, &shm)) {
+	if (wlr_buffer_get_shm(wlr_buffer, &shm)) {
 		return wlr_drm_format_set_has(&wl->shm_formats, shm.format,
 			DRM_FORMAT_MOD_INVALID);
+	} else if (wlr_buffer_get_dmabuf(wlr_buffer, &dmabuf)) {
+		return wlr_drm_format_set_has(&wl->linux_dmabuf_v1_formats,
+			dmabuf.format, dmabuf.modifier);
 	} else {
 		return false;
 	}
@@ -217,10 +217,10 @@ static struct wlr_wl_buffer *create_wl_buffer(struct wlr_wl_backend *wl,
 	struct wlr_dmabuf_attributes dmabuf;
 	struct wlr_shm_attributes shm;
 	struct wl_buffer *wl_buffer;
-	if (wlr_buffer_get_dmabuf(wlr_buffer, &dmabuf)) {
-		wl_buffer = import_dmabuf(wl, &dmabuf);
-	} else if (wlr_buffer_get_shm(wlr_buffer, &shm)) {
+	if (wlr_buffer_get_shm(wlr_buffer, &shm)) {
 		wl_buffer = import_shm(wl, &shm);
+	} else if (wlr_buffer_get_dmabuf(wlr_buffer, &dmabuf)) {
+		wl_buffer = import_dmabuf(wl, &dmabuf);
 	} else {
 		return NULL;
 	}
